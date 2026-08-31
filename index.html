@@ -302,8 +302,14 @@
           <div class="radio-chip" data-area="رأس المعرة">رأس المعرة</div>
           <div class="radio-chip" data-area="أخرى">أخرى</div>
         </div>
+        <input type="text" class="form-field" id="custom-area-input" style="display:none"
+               placeholder="اكتب منطقتك يدوياً... مثال: سرغايا" />
 
-        <label class="form-label">3. وصف المشكلة</label>
+        <label class="form-label" style="display:none" id="detail-label">3. عنوان تفصيلي (اختياري)</label>
+        <textarea class="form-field" id="detail-input" style="display:none"
+               placeholder="اكتب العنوان التفصيلي (الشارع، البناء، الطابق...) ليسهل وصول الفني إليك"></textarea>
+
+        <label class="form-label">4. وصف المشكلة</label>
         <textarea class="form-field" id="problem-input" placeholder="اشرح المشكلة بالتفصيل لنستعد لك بشكل أفضل..."></textarea>
 
         <button class="submit-btn" id="submit-btn" onclick="submitOrder()">
@@ -451,6 +457,13 @@
           selectedArea = el.dataset.area;
           document.querySelectorAll('#areas-group [data-area]').forEach(x => x.classList.remove('active'));
           el.classList.add('active');
+          const custInput = document.getElementById('custom-area-input');
+          if (selectedArea === 'أخرى') {
+            custInput.style.display = 'block';
+          } else {
+            custInput.style.display = 'none';
+            custInput.value = '';
+          }
         });
       });
     }
@@ -458,17 +471,26 @@
     // بناء رسالة الطلب وإرسالها عبر wa.me
     function submitOrder() {
       const problem = document.getElementById('problem-input').value.trim();
+      const detail = document.getElementById('detail-input').value.trim();
       const errBox = document.getElementById('form-error');
       errBox.style.display = 'none';
 
+      let area = selectedArea;
+      if (area === 'أخرى') {
+        const custom = document.getElementById('custom-area-input').value.trim();
+        if (!custom) { showError('اكتب منطقتك يدوياً'); return; }
+        area = custom;
+      }
+
       if (!selectedService) { showError('اختر الخدمة أولاً'); return; }
-      if (!selectedArea)   { showError('اختر المنطقة'); return; }
+      if (!area)   { showError('اختر المنطقة'); return; }
       if (problem.length < 3) { showError('اكتب وصفاً للمشكلة'); return; }
 
-      const message = `🛒 طلب خدمة جديد من الموقع\n\n` +
+      let message = `🛒 طلب خدمة جديد من الموقع\n\n` +
         `⭐ الخدمة: ${selectedService}\n` +
-        `📍 المنطقة: ${selectedArea}\n` +
-        `📝 المشكلة: ${problem}`;
+        `📍 المنطقة: ${area}\n`;
+      if (detail) message += `🏠 العنوان: ${detail}\n`;
+      message += `📝 المشكلة: ${problem}`;
 
       const url = `https://wa.me/${BOT_PHONE}?text=${encodeURIComponent(message)}`;
       window.open(url, '_blank');
