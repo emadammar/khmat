@@ -214,6 +214,38 @@
     display: none;
   }
 
+  /* قسم انضم كفني */
+  .tech-intro {
+    background: linear-gradient(135deg, #0f5f3f 0%, #0b4730 100%);
+    color: #fff;
+    border-radius: var(--radius);
+    padding: 30px 24px;
+    margin-bottom: 22px;
+    box-shadow: var(--shadow);
+  }
+  .tech-intro h3 { font-size: 1.35rem; margin-bottom: 10px; }
+  .tech-intro > p { opacity: .95; margin-bottom: 16px; line-height: 1.8; }
+  .tech-perks { display: grid; grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); gap: 10px; }
+  .tech-perk {
+    background: rgba(255,255,255,.12);
+    border: 1px solid rgba(255,255,255,.22);
+    border-radius: 12px;
+    padding: 12px;
+    text-align: center;
+    font-size: .9rem;
+  }
+  .tech-perk .t-ico { font-size: 1.5rem; display: block; margin-bottom: 6px; }
+  .tech-perk .t-txt { font-weight: 700; }
+  .tech-note {
+    background: #fff8e6;
+    border: 1px solid #f5d88a;
+    color: #7a5b00;
+    border-radius: 12px;
+    padding: 12px 16px;
+    margin-top: 16px;
+    font-size: .9rem;
+  }
+
   .final-cta {
     background: linear-gradient(135deg, var(--primary) 0%, var(--primary-dark) 100%);
     color: #fff;
@@ -297,6 +329,59 @@
         <div class="step"><div class="step-num">1</div><div><h4>عبّئ النموذج</h4><p>اختر الخدمة والمنطقة وصف مشكلتك.</p></div></div>
         <div class="step"><div class="step-num">2</div><div><h4>اضغط تأكيد</h4><p>ينقلك واتساب برسالة جاهزة تحمل تفاصيل طلبك.</p></div></div>
         <div class="step"><div class="step-num">3</div><div><h4>يصلك الفني</h4><p>نتواصل مع فني متخصص ويتصل بك لبدء العمل.</p></div></div>
+      </div>
+    </div>
+  </section>
+
+  <section id="join-tech">
+    <div class="wrapper">
+      <h2 class="section-title">انضم لنا كفني 👨‍🔧</h2>
+      <p class="section-sub">كن جزءاً من شبكة فنيي الزبداني الموثوقين</p>
+
+      <div class="tech-intro">
+        <h3>طبيعة العمل مع خدمات الزبداني</h3>
+        <p>
+          عند انضمامك تصبح مستقلاً بالكامل: تختار خدماتك ومناطقك، وترتب أسعارك بنفسك،
+          ونتولى نحن إيصال طلبات الزبائن إليك عبر واتساب مباشرة — بلا وسيط بينك وبينهم.
+          تقرر بنفسك قبول الطلب أو رفضه، وتواصل مباشرة مع الزبون لبدء العمل.
+        </p>
+        <div class="tech-perks">
+          <div class="tech-perk"><span class="t-ico">💼</span><span class="t-txt">عمل مستقل</span></div>
+          <div class="tech-perk"><span class="t-ico">💬</span><span class="t-txt">تواصل مباشر مع الزبون</span></div>
+          <div class="tech-perk"><span class="t-ico">💰</span><span class="t-txt">أنت تحدّد أجرك</span></div>
+          <div class="tech-perk"><span class="t-ico">📍</span><span class="t-txt">تختار مناطقك</span></div>
+        </div>
+        <div class="tech-note">
+          💳 للانضمام يتم دفع اشتراك شهري <strong>5$</strong> عبر تحويل <strong>شام كاش</strong>،
+          ثم تُرسل البيانات للإدارة للموافقة خلال وقت قصير.
+        </div>
+      </div>
+
+      <div class="order-form">
+        <div class="form-error" id="tech-form-error"></div>
+
+        <label class="form-label">اسمك الكامل</label>
+        <input type="text" class="form-field" id="tech-name" placeholder="مثال: أحمد محمد" />
+
+        <label class="form-label">تخصصك (الخدمة)</label>
+        <div class="radio-group" id="tech-services-group"></div>
+
+        <label class="form-label">المناطق التي تعمل بها</label>
+        <div class="radio-group" id="tech-areas-group">
+          <div class="radio-chip" data-tarea="الزبداني">الزبداني</div>
+          <div class="radio-chip" data-tarea="بلدور">بلدور</div>
+          <div class="radio-chip" data-tarea="بلودان">بلودان</div>
+          <div class="radio-chip" data-tarea="مضايا">مضايا</div>
+          <div class="radio-chip" data-tarea="رأس المعرة">رأس المعرة</div>
+          <div class="radio-chip" data-tarea="كل المناطق">كل المناطق</div>
+        </div>
+
+        <label class="form-label">رقم هاتفك (الذي ستصلك عليه الطلبات)</label>
+        <input type="tel" class="form-field" id="tech-phone" placeholder="مثال: 09XXXXXXXX" />
+
+        <button class="submit-btn" id="tech-submit" onclick="submitTechReg()">
+          📝 سجّل وتابع خطوات الانضمام في واتساب
+        </button>
       </div>
     </div>
   </section>
@@ -399,8 +484,66 @@
       errBox.style.display = 'block';
     }
 
+    // ====== تسجيل كفني ======
+    let selectedTechService = '';
+    let selectedTechArea = '';
+
+    function renderTech() {
+      const group = document.getElementById('tech-services-group');
+      group.innerHTML = [
+        'كهرباء', 'سباكة', 'تبريد وتكييف', 'صيانة غسالات', 'صيانة ثلاجات',
+        'أجهزة منزلية', 'نجارة', 'دهان', 'حدادة', 'جبس بورد', 'سيراميك وأرضيات', 'أخرى'
+      ].map(s => `<div class="radio-chip" data-tservice="${s}">${s}</div>`).join('');
+
+      document.querySelectorAll('[data-tservice]').forEach(el => {
+        el.addEventListener('click', () => {
+          selectedTechService = el.dataset.tservice;
+          document.querySelectorAll('[data-tservice]').forEach(x => x.classList.remove('active'));
+          el.classList.add('active');
+        });
+      });
+      document.querySelectorAll('#tech-areas-group [data-tarea]').forEach(el => {
+        el.addEventListener('click', () => {
+          selectedTechArea = el.dataset.tarea;
+          document.querySelectorAll('#tech-areas-group [data-tarea]').forEach(x => x.classList.remove('active'));
+          el.classList.add('active');
+        });
+      });
+    }
+
+    function showTechError(msg) {
+      const errBox = document.getElementById('tech-form-error');
+      errBox.textContent = '⚠️ ' + msg;
+      errBox.style.display = 'block';
+    }
+
+    function submitTechReg() {
+      const name = document.getElementById('tech-name').value.trim();
+      const phone = document.getElementById('tech-phone').value.trim();
+      document.getElementById('tech-form-error').style.display = 'none';
+
+      if (name.length < 2) { showTechError('اكتب اسمك الكامل'); return; }
+      if (!selectedTechService) { showTechError('اختر تخصصك'); return; }
+      if (!selectedTechArea) { showTechError('اختر منطقتك'); return; }
+      if (phone.length < 9) { showTechError('اكتب رقم هاتف صحيح'); return; }
+
+      const message = `👨‍🔧 طلب انضمام كفني جديد من الموقع\n\n` +
+        `👤 الاسم: ${name}\n` +
+        `🔧 التخصص: ${selectedTechService}\n` +
+        `📍 المنطقة: ${selectedTechArea}\n` +
+        `📞 الرقم: ${phone}`;
+
+      const url = `https://wa.me/${BOT_PHONE}?text=${encodeURIComponent(message)}`;
+      window.open(url, '_blank');
+      document.getElementById('tech-submit').textContent = '✅ أكمل خطوات الانضمام في واتساب...';
+      setTimeout(() => {
+        document.getElementById('tech-submit').textContent = '📝 سجّل وتابع خطوات الانضمام في واتساب';
+      }, 4000);
+    }
+
     document.getElementById('year').textContent = new Date().getFullYear();
     render();
+    renderTech();
   </script>
 </body>
 </html>
