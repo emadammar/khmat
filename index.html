@@ -78,6 +78,8 @@
     border-radius: 999px;
     box-shadow: 0 10px 25px rgba(37,211,102,.4);
     transition: transform .15s, background .15s;
+    border: none;
+    cursor: pointer;
   }
   .wa-btn:hover { background: var(--green-dark); transform: translateY(-2px); }
   .wa-btn svg { width: 26px; height: 26px; fill: #fff; }
@@ -95,13 +97,21 @@
     text-align: center;
     box-shadow: var(--shadow);
     transition: transform .15s;
+    cursor: pointer;
+    border: 2px solid transparent;
   }
   .svc-card:hover { transform: translateY(-3px); }
+  .svc-card.selected {
+    border-color: var(--green);
+    box-shadow: 0 8px 20px rgba(37,211,102,.25);
+    background: #f0fdf4;
+  }
   .svc-card .s-icon { font-size: 1.8rem; margin-bottom: 6px; }
   .svc-card .s-name { font-weight: 700; font-size: .98rem; }
 
   section { padding: 40px 0; }
   .section-title { text-align: center; font-size: 1.5rem; margin-bottom: 24px; font-weight: 800; }
+  .section-sub { text-align:center; color: var(--muted); margin-bottom:24px; }
 
   .steps { counter-reset: step; }
   .step {
@@ -126,6 +136,84 @@
   .step h4 { margin-bottom: 2px; }
   .step p { color: var(--muted); font-size: .95rem; }
 
+  .order-form {
+    background: var(--card);
+    border-radius: var(--radius);
+    padding: 28px 24px;
+    box-shadow: var(--shadow);
+    margin-top: 8px;
+  }
+  .form-label {
+    display: block;
+    font-size: .95rem;
+    font-weight: 700;
+    margin-bottom: 8px;
+    color: var(--text);
+  }
+  .form-field {
+    width: 100%;
+    padding: 13px 16px;
+    border: 2px solid #e2e8f0;
+    border-radius: 12px;
+    font-size: 1rem;
+    font-family: inherit;
+    transition: border-color .15s;
+    background: #fff;
+    margin-bottom: 20px;
+  }
+  .form-field:focus { outline: none; border-color: var(--green); }
+  textarea.form-field { resize: vertical; min-height: 90px; }
+
+  .radio-group {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
+    gap: 10px;
+    margin-bottom: 20px;
+  }
+  .radio-chip {
+    border: 2px solid #e2e8f0;
+    border-radius: 12px;
+    padding: 12px;
+    text-align: center;
+    cursor: pointer;
+    transition: all .15s;
+    font-size: .92rem;
+    background: #fff;
+  }
+  .radio-chip:hover { border-color: var(--green); }
+  .radio-chip.active { border-color: var(--green); background: #f0fdf4; font-weight: 700; }
+
+  .submit-btn {
+    width: 100%;
+    background: linear-gradient(135deg, var(--green) 0%, var(--green-dark) 100%);
+    color: #fff;
+    font-size: 1.15rem;
+    font-weight: 800;
+    padding: 16px;
+    border: none;
+    border-radius: 14px;
+    cursor: pointer;
+    box-shadow: 0 10px 25px rgba(37,211,102,.3);
+    transition: transform .15s, background .15s;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+  }
+  .submit-btn:hover { transform: translateY(-2px); }
+  .submit-btn:disabled { opacity: .5; cursor: not-allowed; transform: none; }
+
+  .form-error {
+    color: #b91c1c;
+    background: #fef2f2;
+    border: 1px solid #fecaca;
+    padding: 12px 16px;
+    border-radius: 12px;
+    margin-bottom: 16px;
+    font-size: .92rem;
+    display: none;
+  }
+
   .final-cta {
     background: linear-gradient(135deg, var(--primary) 0%, var(--primary-dark) 100%);
     color: #fff;
@@ -140,7 +228,7 @@
 
   @media (max-width: 480px) {
     .hero h1 { font-size: 1.9rem; }
-    .wa-btn { width: 100%; }
+    .wa-btn, .submit-btn { width: 100%; }
   }
 </style>
 </head>
@@ -159,31 +247,46 @@
       <svg viewBox="0 0 24 24"><path d="M.057 24l1.687-6.163a11.867 11.867 0 0 1-1.587-5.946C.16 5.335 5.495 0 12.05 0a11.82 11.82 0 0 1 8.413 3.488 11.82 11.82 0 0 1 3.48 8.414c-.003 6.557-5.338 11.892-11.893 11.892a11.9 11.9 0 0 1-5.688-1.448L.057 24zm6.597-3.807c1.676.995 3.276 1.591 5.392 1.592 5.448 0 9.886-4.434 9.889-9.885.002-5.462-4.415-9.89-9.881-9.892-5.452 0-9.887 4.434-9.889 9.884a9.86 9.86 0 0 0 1.51 5.26l-.999 3.648 3.978-1.587zm11.387-5.464c-.074-.124-.272-.198-.57-.347-.297-.149-1.758-.868-2.031-.967-.272-.099-.47-.149-.669.149-.198.297-.768.967-.941 1.165-.173.198-.347.223-.644.074-.297-.149-1.255-.462-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.297-.347.446-.521.151-.172.2-.296.3-.495.099-.198.05-.372-.025-.521-.075-.148-.669-1.611-.916-2.206-.242-.579-.487-.501-.669-.51l-.57-.01c-.198 0-.52.074-.792.372s-1.04 1.016-1.04 2.479 1.065 2.876 1.213 3.074c.149.198 2.095 3.2 5.076 4.487.709.306 1.263.489 1.694.626.712.226 1.36.194 1.872.118.571-.085 1.758-.719 2.006-1.413.248-.695.248-1.29.173-1.414z"/></svg>
       اطلب خدمتك الآن
     </a>
-    <div class="cta-hint">💬 يفتح واتساب — حدد خدمتك داخل البوت مباشرة</div>
+    <div class="cta-hint">💬 يفتح واتساب — أو عبّئ النموذج بالأسفل لإرسال تفاصيل طلبك دفعة واحدة</div>
   </div>
 
   <section>
     <div class="wrapper">
-      <h2 class="section-title">خدماتنا</h2>
-      <p class="section-sub" style="text-align:center;color:var(--muted);margin-bottom:24px;">كل ما تحتاجه منزلك — وكل ما يتجاوز ذلك، تحدث معنا</p>
-      <div class="services-grid">
-        <div class="svc-card"><div class="s-icon">⚡</div><div class="s-name">كهرباء</div></div>
-        <div class="svc-card"><div class="s-icon">🚰</div><div class="s-name">سباكة</div></div>
-        <div class="svc-card"><div class="s-icon">❄️</div><div class="s-name">تبريد وتكييف</div></div>
-        <div class="svc-card"><div class="s-icon">🧺</div><div class="s-name">صيانة غسالات</div></div>
-        <div class="svc-card"><div class="s-icon">🧊</div><div class="s-name">صيانة ثلاجات</div></div>
-        <div class="svc-card"><div class="s-icon">♨️</div><div class="s-name">سخانات ومياه</div></div>
-        <div class="svc-card"><div class="s-icon">🛠</div><div class="s-name">أجهزة منزلية</div></div>
-        <div class="svc-card"><div class="s-icon">🪚</div><div class="s-name">نجارة</div></div>
-        <div class="svc-card"><div class="s-icon">🎨</div><div class="s-name">دهان</div></div>
-        <div class="svc-card"><div class="s-icon">🔩</div><div class="s-name">حدادة</div></div>
-        <div class="svc-card"><div class="s-icon">🪟</div><div class="s-name">زجاج ومطابخ ألمنيوم</div></div>
-        <div class="svc-card"><div class="s-icon">🧱</div><div class="s-name">جبس بورد</div></div>
-        <div class="svc-card"><div class="s-icon">🏺</div><div class="s-name">سيراميك وأرضيات</div></div>
-        <div class="svc-card"><div class="s-icon">🚽</div><div class="s-name">أدوات صحية</div></div>
-        <div class="svc-card"><div class="s-icon">🌐</div><div class="s-name">صيانة عامة</div></div>
-        <div class="svc-card"><div class="s-icon">➕</div><div class="s-name">خدمات أخرى</div></div>
+      <h2 class="section-title">اطلب خدمتك الآن</h2>
+      <p class="section-sub">اختر الخدمة، ثم أرسل طلبك مباشرة إلى واتساب</p>
+
+      <div class="order-form">
+        <div class="form-error" id="form-error"></div>
+
+        <label class="form-label">1. اختر الخدمة</label>
+        <div class="radio-group" id="services-group"></div>
+
+        <label class="form-label">2. المنطقة</label>
+        <div class="radio-group" id="areas-group">
+          <div class="radio-chip" data-area="الزبداني">الزبداني</div>
+          <div class="radio-chip" data-area="بلدور">بلدور</div>
+          <div class="radio-chip" data-area="بلودان">بلودان</div>
+          <div class="radio-chip" data-area="مضايا">مضايا</div>
+          <div class="radio-chip" data-area="رأس المعرة">رأس المعرة</div>
+          <div class="radio-chip" data-area="أخرى">أخرى</div>
+        </div>
+
+        <label class="form-label">3. وصف المشكلة</label>
+        <textarea class="form-field" id="problem-input" placeholder="اشرح المشكلة بالتفصيل لنستعد لك بشكل أفضل..."></textarea>
+
+        <button class="submit-btn" id="submit-btn" onclick="submitOrder()">
+          <svg viewBox="0 0 24 24" style="width:22px;height:22px;fill:#fff"><path d="M.057 24l1.687-6.163a11.867 11.867 0 0 1-1.587-5.946C.16 5.335 5.495 0 12.05 0a11.82 11.82 0 0 1 8.413 3.488 11.82 11.82 0 0 1 3.48 8.414c-.003 6.557-5.338 11.892-11.893 11.892a11.9 11.9 0 0 1-5.688-1.448L.057 24zm6.597-3.807c1.676.995 3.276 1.591 5.392 1.592 5.448 0 9.886-4.434 9.889-9.885.002-5.462-4.415-9.89-9.881-9.892-5.452 0-9.887 4.434-9.889 9.884a9.86 9.86 0 0 0 1.51 5.26l-.999 3.648 3.978-1.587zm11.387-5.464c-.074-.124-.272-.198-.57-.347-.297-.149-1.758-.868-2.031-.967-.272-.099-.47-.149-.669.149-.198.297-.768.967-.941 1.165-.173.198-.347.223-.644.074-.297-.149-1.255-.462-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.297-.347.446-.521.151-.172.2-.296.3-.495.099-.198.05-.372-.025-.521-.075-.148-.669-1.611-.916-2.206-.242-.579-.487-.501-.669-.51l-.57-.01c-.198 0-.52.074-.792.372s-1.04 1.016-1.04 2.479 1.065 2.876 1.213 3.074c.149.198 2.095 3.2 5.076 4.487.709.306 1.263.489 1.694.626.712.226 1.36.194 1.872.118.571-.085 1.758-.719 2.006-1.413.248-.695.248-1.29.173-1.414z"/></svg>
+          تأكيد الطلب عبر واتساب
+        </button>
       </div>
+    </div>
+  </section>
+
+  <section>
+    <div class="wrapper">
+      <h2 class="section-title">خدماتنا</h2>
+      <p class="section-sub">كل ما تحتاجه منزلك — وكل ما يتجاوز ذلك، تحدث معنا</p>
+      <div class="services-grid" id="services-grid-static"></div>
     </div>
   </section>
 
@@ -191,8 +294,8 @@
     <div class="wrapper">
       <h2 class="section-title">كيف نعمل؟</h2>
       <div class="steps">
-        <div class="step"><div class="step-num">1</div><div><h4>اضغط على الزر</h4><p>تفتح محادثة واتساب مع البوت مباشرة.</p></div></div>
-        <div class="step"><div class="step-num">2</div><div><h4>حدد خدمتك</h4><p>يختار البوت معك نوع الخدمة والمنطقة ووصف المشكلة.</p></div></div>
+        <div class="step"><div class="step-num">1</div><div><h4>عبّئ النموذج</h4><p>اختر الخدمة والمنطقة وصف مشكلتك.</p></div></div>
+        <div class="step"><div class="step-num">2</div><div><h4>اضغط تأكيد</h4><p>ينقلك واتساب برسالة جاهزة تحمل تفاصيل طلبك.</p></div></div>
         <div class="step"><div class="step-num">3</div><div><h4>يصلك الفني</h4><p>نتواصل مع فني متخصص ويتصل بك لبدء العمل.</p></div></div>
       </div>
     </div>
@@ -202,7 +305,7 @@
     <div class="wrapper">
       <div class="final-cta">
         <h2>جاهز تطلّب؟ 🤝</h2>
-        <p>اضغط على الزر وحدد خدمتك داخل البوت.</p>
+        <p>عبّئ النموذج بالأسفل أو اضغط الزر للبدء فوراً.</p>
         <a class="wa-btn" href="https://wa.me/6287861193012?text=%D9%85%D8%B1%D8%AD%D8%A8%D8%A7%D8%8C%20%D8%A3%D8%B1%D9%8A%D8%AF%20%D8%B7%D9%84%D8%A8%20%D8%AE%D8%AF%D9%85%D8%A9" target="_blank" rel="noopener">
           <svg viewBox="0 0 24 24"><path d="M.057 24l1.687-6.163a11.867 11.867 0 0 1-1.587-5.946C.16 5.335 5.495 0 12.05 0a11.82 11.82 0 0 1 8.413 3.488 11.82 11.82 0 0 1 3.48 8.414c-.003 6.557-5.338 11.892-11.893 11.892a11.9 11.9 0 0 1-5.688-1.448L.057 24zm6.597-3.807c1.676.995 3.276 1.591 5.392 1.592 5.448 0 9.886-4.434 9.889-9.885.002-5.462-4.415-9.89-9.881-9.892-5.452 0-9.887 4.434-9.889 9.884a9.86 9.86 0 0 0 1.51 5.26l-.999 3.648 3.978-1.587zm11.387-5.464c-.074-.124-.272-.198-.57-.347-.297-.149-1.758-.868-2.031-.967-.272-.099-.47-.149-.669.149-.198.297-.768.967-.941 1.165-.173.198-.347.223-.644.074-.297-.149-1.255-.462-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.297-.347.446-.521.151-.172.2-.296.3-.495.099-.198.05-.372-.025-.521-.075-.148-.669-1.611-.916-2.206-.242-.579-.487-.501-.669-.51l-.57-.01c-.198 0-.52.074-.792.372s-1.04 1.016-1.04 2.479 1.065 2.876 1.213 3.074c.149.198 2.095 3.2 5.076 4.487.709.306 1.263.489 1.694.626.712.226 1.36.194 1.872.118.571-.085 1.758-.719 2.006-1.413.248-.695.248-1.29.173-1.414z"/></svg>
           اطلب عبر واتساب
@@ -214,7 +317,90 @@
   <footer>© <span id="year"></span> خدمات الزبداني. جميع الحقوق محفوظة.</footer>
 
   <script>
+    // قائمة الخدمات (ثابتة على الصفحة الحالية)
+    const SERVICES = [
+      { icon: '⚡', name: 'كهرباء' },
+      { icon: '🚰', name: 'سباكة' },
+      { icon: '❄️', name: 'تبريد وتكييف' },
+      { icon: '🧺', name: 'صيانة غسالات' },
+      { icon: '🧊', name: 'صيانة ثلاجات' },
+      { icon: '♨️', name: 'سخانات ومياه' },
+      { icon: '🛠', name: 'أجهزة منزلية' },
+      { icon: '🪚', name: 'نجارة' },
+      { icon: '🎨', name: 'دهان' },
+      { icon: '🔩', name: 'حدادة' },
+      { icon: '🪟', name: 'زجاج ومطابخ ألمنيوم' },
+      { icon: '🧱', name: 'جبس بورد' },
+      { icon: '🏺', name: 'سيراميك وأرضيات' },
+      { icon: '🚽', name: 'أدوات صحية' },
+      { icon: '🌐', name: 'صيانة عامة' },
+      { icon: '➕', name: 'خدمات أخرى' },
+    ];
+
+    const BOT_PHONE = '6287861193012'; // رقم البوت
+    let selectedService = '';
+    let selectedArea = '';
+
+    // بناء شريط خيارات الخدمات (نموذج) + شبكة الخدمات (عرض)
+    function render() {
+      const group = document.getElementById('services-group');
+      const grid = document.getElementById('services-grid-static');
+      group.innerHTML = SERVICES.map(s =>
+        `<div class="radio-chip" data-service="${s.name}">${s.icon} ${s.name}</div>`
+      ).join('');
+      grid.innerHTML = SERVICES.map(s =>
+        `<div class="svc-card"><div class="s-icon">${s.icon}</div><div class="s-name">${s.name}</div></div>`
+      ).join('');
+
+      // اختيار الخدمة
+      document.querySelectorAll('[data-service]').forEach(el => {
+        el.addEventListener('click', () => {
+          selectedService = el.dataset.service;
+          document.querySelectorAll('[data-service]').forEach(x => x.classList.remove('active'));
+          el.classList.add('active');
+        });
+      });
+      // اختيار المنطقة
+      document.querySelectorAll('#areas-group [data-area]').forEach(el => {
+        el.addEventListener('click', () => {
+          selectedArea = el.dataset.area;
+          document.querySelectorAll('#areas-group [data-area]').forEach(x => x.classList.remove('active'));
+          el.classList.add('active');
+        });
+      });
+    }
+
+    // بناء رسالة الطلب وإرسالها عبر wa.me
+    function submitOrder() {
+      const problem = document.getElementById('problem-input').value.trim();
+      const errBox = document.getElementById('form-error');
+      errBox.style.display = 'none';
+
+      if (!selectedService) { showError('اختر الخدمة أولاً'); return; }
+      if (!selectedArea)   { showError('اختر المنطقة'); return; }
+      if (problem.length < 3) { showError('اكتب وصفاً للمشكلة'); return; }
+
+      const message = `🛒 طلب خدمة جديد من الموقع\n\n` +
+        `⭐ الخدمة: ${selectedService}\n` +
+        `📍 المنطقة: ${selectedArea}\n` +
+        `📝 المشكلة: ${problem}`;
+
+      const url = `https://wa.me/${BOT_PHONE}?text=${encodeURIComponent(message)}`;
+      window.open(url, '_blank');
+      document.getElementById('submit-btn').textContent = '✅ ستصل لطلبك في واتساب...';
+      setTimeout(() => {
+        document.getElementById('submit-btn').textContent = 'تأكيد الطلب عبر واتساب';
+      }, 4000);
+    }
+
+    function showError(msg) {
+      const errBox = document.getElementById('form-error');
+      errBox.textContent = '⚠️ ' + msg;
+      errBox.style.display = 'block';
+    }
+
     document.getElementById('year').textContent = new Date().getFullYear();
+    render();
   </script>
 </body>
 </html>
